@@ -36,3 +36,11 @@ test('curse room guide documents risks and possible contents',()=>{for(const phr
 test('swappable active items and charge costs are described',()=>{const rules=require('./core.js');for(const [id,name] of [['fury','Fury Tome'],['bell','Ashen Bell']]){assert.ok(html.includes(`data-active="${id}"`));assert.ok(html.includes(name));assert.ok(rules.activeItems[id]);}for(const phrase of ['old one stays on the floor with its current charge','four charges','three charges','25 damage','until you leave the room'])assert.ok(html.includes(phrase),phrase);});
 
 test('familiar effects and limits are documented',()=>{for(const phrase of ['data-upgrade="wisp"','data-upgrade="orbit"','every 0.8 seconds','do not change its tears','does not block contact damage'])assert.ok(html.includes(phrase),phrase);});
+
+test('every guide definition has a visual key and shop entries match current inventory',()=>{
+ const terms=[...html.matchAll(/<dt>(.*?)<\/dt>/g)].map(m=>m[1]);assert.ok(terms.length>25);for(const term of terms)assert.match(term,/class="guide-icon /,term);
+ const inventory=game.match(/shop\.drops=\[(.*?)\];/)[1];const actual=[...inventory.matchAll(/type:'([^']+)'/g)].map(m=>m[1]).sort();const docs=[...html.matchAll(/data-shop="([^"]+)"/g)].map(m=>m[1]).sort();assert.deepEqual(docs,actual);
+ for(const [type,price] of [['heart',3],['key',5],['bomb',5],['upgrade',10],['battery',5]]){assert.match(inventory,new RegExp(`type:'${type}'[^}]*price:${price}`));assert.match(html,new RegExp(`>${type==='upgrade'?'Random upgrade':type==='heart'?'Red heart':type[0].toUpperCase()+type.slice(1)} · ${price} coins`));}
+ const pool=inventory.match(/item:pick\(\[([^\]]+)\]\)/)[1];const actualUpgrades=[...pool.matchAll(/'([^']+)'/g)].map(m=>m[1]).sort();const guideUpgrades=html.match(/data-shop-upgrades="([^"]+)"/)[1].split(',').sort();assert.deepEqual(guideUpgrades,actualUpgrades);
+});
+test('pause reference exposes resume and full guide controls',()=>{for(const id of ['pause-reference','pause-resume','pause-guide'])assert.ok(html.includes(`id="${id}"`));assert.match(game,/pauseGuide\?\.addEventListener/);assert.match(game,/setPaused\(!paused,true\)/);});
