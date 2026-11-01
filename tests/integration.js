@@ -1,0 +1,13 @@
+'use strict';
+// Fixture-assisted browser checks against the production game loop, served over HTTP.
+(function(){const results=[];const check=(ok,label)=>{if(!ok)throw Error(label);results.push('PASS '+label);};try{
+ document.querySelector('#start').click();check(!!game&&game.floor===1,'normal start creates floor one');
+ let p=game.player, shop=game.rooms.find(r=>r.type==='shop'),treasure=game.rooms.find(r=>r.type==='treasure'),boss=game.rooms.find(r=>r.type==='boss');
+ check(shop&&shop.locked&&treasure&&!treasure.locked&&boss,'special rooms generated and initial locks set');
+ check(Rules.unlock(shop,p)&&p.keys===0,'shop consumes a key');enter(shop);let good=shop.drops.find(d=>d.type==='bomb');p.x=good.x;p.y=good.y;update(.01);check(shop.drops.includes(good),'unaffordable purchase remains');p.coins=5;update(.01);check(!shop.drops.includes(good)&&p.coins===0&&p.bombs===2,'affordable purchase exchanges coins for bomb');
+ let combat=game.rooms.find(r=>r.type==='normal');enter(combat);combat.rocks=[];combat.enemies=[enemy('chaser',350,300),enemy('chaser',400,300)];p.x=150;p.y=450;Rules.apply('double',p);Rules.apply('pierce',p);Rules.apply('burst',p);let shot=Rules.projectiles(p,390,0)[0];fire(350,300,0,0,false,shot.damage);Object.assign(game.shots[0],{hitEnemies:[],pierce:shot.pierce,burst:shot.burst});let hp= combat.enemies[1].hp;update(.01);check(combat.enemies[0].hp<9&&combat.enemies[1].hp<hp&&game.shots.length>0,'piercing splash projectile damages nearby enemies and survives hit');
+ enter(boss);let e=boss.enemies[0];p.x=480;p.y=450;e.x=480;e.y=300;e.hp=3.5;fire(e.x,e.y,0,0,false,3.5);Object.assign(game.shots[0],{hitEnemies:[],pierce:false,burst:false});update(.01);check(boss.clear&&boss.drops.some(d=>d.type==='upgrade')&&boss.drops.some(d=>d.type==='hatch'),'boss defeat produces reward and hatch');
+ let reward=boss.drops.find(d=>d.type==='upgrade');p.x=reward.x;p.y=reward.y;update(.01);check(!boss.drops.includes(reward),'boss reward collected');let hatch=boss.drops.find(d=>d.type==='hatch');p.x=hatch.x;p.y=hatch.y;update(.01);check(game.floor===2&&game.current.type==='start','hatch starts next floor');check(game.rooms.find(r=>r.type==='treasure').locked,'later treasure room is locked');
+ p.hp=1;p.iframes=0;hurtPlayer();check(game===null&&!overlay.classList.contains('hidden'),'death ends run');document.querySelector('#start').click();check(game&&game.floor===1&&game.player.hp===6,'restart resets the run');
+ document.querySelector('#result').textContent=results.join('\n');
+ }catch(e){document.querySelector('#result').textContent=results.join('\n')+'\nFAIL '+e.message;throw e;}})();
