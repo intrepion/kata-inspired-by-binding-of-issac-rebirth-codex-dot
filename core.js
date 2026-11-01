@@ -61,6 +61,16 @@ const Rules = {
     if (player.keys < 1) return false;
     player.keys--; room.locked = false; return true;
   },
+  dealChance(floor, redDamage) {
+    return floor<2 || floor>=6 ? 0 : redDamage ? .25 : 1;
+  },
+  payHeartContainers(player, hearts) {
+    const cost=hearts*2, remaining=player.maxHp-cost;
+    if(remaining<0) return false;
+    const red=Math.min(player.hp,remaining);
+    if(red<=0 && !player.shields.some(h=>h.hp>0)) return false;
+    player.maxHp=remaining;player.hp=red;return true;
+  },
   buy(drop, player) {
     if (!drop.price) return true;
     if (player.coins < drop.price) return false;
@@ -68,6 +78,8 @@ const Rules = {
   },
   apply(item, player) {
     if (item === 'damage') player.damage += 1.5;
+    if (item === 'blood') player.damage += 3;
+    if (item === 'homing') player.homing = true;
     if (item === 'rate') player.rate = Math.max(.12, player.rate - .045);
     if (item === 'speed') player.speed += 25;
     if (item === 'range') player.range += 100;
@@ -78,7 +90,7 @@ const Rules = {
   },
   projectiles(player, dx, dy) {
     const angles = player.double ? [-.13, .13] : [0];
-    return angles.map(a => ({dx: dx * Math.cos(a) - dy * Math.sin(a), dy: dx * Math.sin(a) + dy * Math.cos(a), damage: player.damage, pierce: player.pierce, burst: player.burst}));
+    return angles.map(a => ({dx: dx * Math.cos(a) - dy * Math.sin(a), dy: dx * Math.sin(a) + dy * Math.cos(a), damage: player.damage, pierce: player.pierce, burst: player.burst, homing: player.homing}));
   }
 };
 if (typeof module !== 'undefined') module.exports = Rules;

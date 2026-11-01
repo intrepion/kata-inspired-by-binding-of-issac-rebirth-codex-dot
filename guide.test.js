@@ -15,10 +15,12 @@ test('every obtainable upgrade is documented with its implemented behavior',()=>
  const rules=require('./core.js');
  const pools=[...game.matchAll(/item:pick\(\[([^\]]+)\]\)/g)].flatMap(m=>[...m[1].matchAll(/'([^']+)'/g)].map(x=>x[1]));
  const entries=[...html.matchAll(/data-upgrade="([^"]+)"/g)].map(m=>m[1]);
- assert.deepEqual([...new Set(pools)].sort(),entries.filter(x=>x!=='active'&&x!=='lantern').sort());
+ assert.deepEqual([...new Set(pools)].sort(),entries.filter(x=>!['active','lantern','blood','homing'].includes(x)).sort());
  const p={damage:3.5,rate:.3,speed:190,range:330,hp:4,maxHp:6,shields:[]};
  for(const name of ['damage','rate','speed','range','health','double','pierce','burst'])rules.apply(name,p);
  assert.equal(p.damage,5);assert.ok(Math.abs(p.rate-.255)<1e-10);assert.equal(p.speed,215);assert.equal(p.range,430);assert.equal(p.hp,6);assert.equal(p.maxHp,8);
  const shots=rules.projectiles(p,390,0);assert.equal(shots.length,2);assert.ok(shots.every(s=>s.damage===5&&s.pierce&&s.burst));
- for(const phrase of ['Adds 1.5 damage','0.045 seconds','0.12 seconds','Adds 25 movement speed','Adds 100 units','up to one red-heart container','two angled tears','Rocks still stop them','half that tear’s damage','data-upgrade="active"','data-upgrade="lantern"','Using it at full red health still spends the charge','has no additional effect'])assert.ok(html.includes(phrase),phrase);
+ for(const phrase of ['Adds 1.5 damage','0.045 seconds','0.12 seconds','Adds 25 movement speed','Adds 100 units','up to one red-heart container','two angled tears','Rocks still stop them','half that tear’s damage','data-upgrade="active"','data-upgrade="lantern"','data-upgrade="blood"','data-upgrade="homing"','Using it at full red health still spends the charge','has no additional effect'])assert.ok(html.includes(phrase),phrase);
 });
+
+test('bargain descriptions match their implemented items',()=>{const rules=require('./core.js');let p={damage:3.5};rules.apply('blood',p);rules.apply('homing',p);assert.equal(p.damage,6.5);assert.equal(p.homing,true);assert.ok(rules.projectiles(p,390,0)[0].homing);assert.match(html,/Adds 3 damage/);assert.match(html,/25%/);});
