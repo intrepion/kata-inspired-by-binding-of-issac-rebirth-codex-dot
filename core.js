@@ -83,8 +83,8 @@ const Rules = {
     const stage = Math.min(2, Math.floor((floor-1)/2));
     return [
       {name:'BASEMENT', number:(floor-1)%2+1, boss:'boss', enemies:['chaser','spitter']},
-      {name:'CAVES', number:(floor-1)%2+1, boss:'mason', enemies:['chaser','spitter','burrower']},
-      {name:'DEPTHS', number:(floor-1)%2+1, boss:floor===6?'watcher':'warden', enemies:['chaser','spitter','burrower','fan']}
+      {name:'CAVES', number:(floor-1)%2+1, boss:'mason', enemies:['chaser','spitter','burrower','charger']},
+      {name:'DEPTHS', number:(floor-1)%2+1, boss:floor===6?'watcher':'warden', enemies:['chaser','spitter','burrower','fan','charger']}
     ][stage];
   },
   addShield(player, kind) {
@@ -133,10 +133,13 @@ const Rules = {
     if (item === 'double') player.double = true;
     if (item === 'pierce') player.pierce = true;
     if (item === 'burst') player.burst = true;
+    if (item === 'spectral') player.spectral = true;
+    if (item === 'bounce') player.bounce = true;
+    if (item === 'return') player.returning = true;
   },
   projectiles(player, dx, dy) {
     const angles = player.double ? [-.13, .13] : [0];
-    return angles.map(a => ({dx: dx * Math.cos(a) - dy * Math.sin(a), dy: dx * Math.sin(a) + dy * Math.cos(a), damage: player.damage, pierce: player.pierce, burst: player.burst, homing: player.homing}));
+    return angles.map(a => ({dx: dx * Math.cos(a) - dy * Math.sin(a), dy: dx * Math.sin(a) + dy * Math.cos(a), damage: player.damage, pierce: player.pierce, burst: player.burst, homing: player.homing, spectral: player.spectral, bounce: player.bounce, returning: player.returning}));
   }
 };
 if (typeof module !== 'undefined') module.exports = Rules;

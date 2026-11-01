@@ -11,6 +11,10 @@
   for(const step of path){enter(step.from);step.from.clear=true;step.from.enemies=[];Object.assign(game.player,({left:{x:106,y:320},right:{x:854,y:320},up:{x:480,y:121},down:{x:480,y:519}})[step.dir]);update(.001);if(game.current!==step.to||game.player.keys!==0)throw Error('door traversal failed');}
  }
  check(true,'240 generated floors allow actual door traversal to the boss with zero keys');newGame();
+ // Exercise the real update loop with controlled positions and held fire.
+ {const p=game.player,r=game.current;r.clear=true;r.rocks=[{x:550,y:320,hp:1}];r.enemies=[];p.x=480;p.y=320;p.spectral=true;p.bounce=true;p.returning=true;p.range=1000;p.rate=.3;p.shot=0;keys.add('arrowright');update(.001);keys.delete('arrowright');let shot=game.shots[0];check(shot&&shot.spectral&&shot.bounces===2&&shot.returning,'new tear modifiers apply to fired tears');for(let i=0;i<8;i++)update(.03);check(game.shots.includes(shot)&&shot.x>550,'spectral tear passes through a rock');shot.x=869;shot.y=320;shot.dx=390;shot.dy=0;shot.life=2;shot.returnAt=.5;update(.01);check(shot.dx<0&&shot.bounces===1,'rebound tear reflects at a wall');shot.x=700;shot.life=.49;shot.dx=390;shot.homing=true;update(.01);check(shot.dx<0&&!shot.returning&&!shot.homing,'returning tear reverses once and stops homing');}
+ {newGame();const r=game.current,p=game.player;r.clear=true;r.rocks=[];p.x=700;p.y=320;const e=enemy('charger',300,320);r.enemies=[e];e.phaseTime=.001;update(.01);const x=e.x;update(.1);check(e.phase==='rush'&&e.x>x,'charger aims then rushes toward the player');}
+ newGame();
  let p=game.player;p.hp=4;p.charge=3;useItem();check(p.hp===6&&p.charge===0,'Patchwork Heart heals one red heart and spends three charges');p.charge=3;useItem();check(p.hp===6&&p.charge===0,'Patchwork Heart still spends charge at full health');p.charge=3;
  let shop=game.rooms.find(r=>r.type==='shop'),treasure=game.rooms.find(r=>r.type==='treasure'),boss=game.rooms.find(r=>r.type==='boss');
  check(shop&&shop.locked&&treasure&&!treasure.locked&&boss,'special rooms generated and initial locks set');

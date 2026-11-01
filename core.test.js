@@ -47,3 +47,11 @@ test('a narrow route gains optional rooms rather than locking the boss path',()=
   assert.equal(boss,rooms[11]);assert.equal(rooms.length,14);
   assert.ok(rooms.indexOf(treasure)>=12 && rooms.indexOf(shop)>=12);
 });
+
+
+test('spectral, rebound and returning tears compose with existing modifiers',()=>{
+  const p={damage:4,double:true,pierce:true,burst:true,homing:true};
+  for(const item of ['spectral','bounce','return'])rules.apply(item,p);
+  const shots=rules.projectiles(p,390,0);
+  assert.equal(shots.length,2);assert.ok(shots.every(s=>s.damage===4&&s.spectral&&s.bounce&&s.returning&&s.pierce&&s.burst&&s.homing));
+});
