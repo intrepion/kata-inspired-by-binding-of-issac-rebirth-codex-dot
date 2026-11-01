@@ -93,3 +93,6 @@ test('deeper secret candidates have exactly one ordinary neighbor and favor boss
 
 
 test('profile unlocks require the correct boss floor and damage condition',()=>{for(const floor of [1,3,5,6])assert.equal(rules.profileUnlock(floor,false),null);assert.equal(rules.profileUnlock(2,false),'vanguard');assert.equal(rules.profileUnlock(2,true),null);assert.equal(rules.profileUnlock(4,false),'scout');assert.equal(rules.profileUnlock(4,true),'scout');});
+
+
+test('seeded random streams reproduce sequences and distinguish seed and floor',()=>{let a=rules.seededRandom('HELLO:1'),b=rules.seededRandom('HELLO:1'),c=rules.seededRandom('HELLO:2');const aa=Array.from({length:100},()=>a()),bb=Array.from({length:100},()=>b()),cc=Array.from({length:100},()=>c());assert.deepEqual(aa,bb);assert.notDeepEqual(aa,cc);assert.ok(aa.every(n=>n>=0&&n<1));});

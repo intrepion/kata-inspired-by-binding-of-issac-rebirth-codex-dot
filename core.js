@@ -1,6 +1,11 @@
 'use strict';
 // Rules shared by the game and focused tests. All quantities use half hearts.
 const Rules = {
+  seededRandom(seed) {
+    let state=2166136261;
+    for(let i=0;i<seed.length;i++)state=Math.imul(state^seed.charCodeAt(i),16777619)>>>0;
+    return ()=>{state=(state+0x6D2B79F5)>>>0;let t=state;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296;};
+  },
   profileUnlock(floor,redDamage) {
     return floor===4?'scout':floor===2&&!redDamage?'vanguard':null;
   },

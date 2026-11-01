@@ -3,7 +3,7 @@
 (function(){const originalProfiles=Object.fromEntries(Object.entries(profileKeys).map(([id,key])=>[id,localStorage.getItem(key)]));const results=[];const check=(ok,label)=>{if(!ok)throw Error(label);results.push('PASS '+label);};try{
  document.querySelector('#start').click();check(!!game&&game.floor===1,'normal start creates floor one');for(let i=0;i<100;i++){newGame();let secret=game.rooms.find(r=>r.type==='secret');if(!secret||!game.rooms.some(r=>Object.values(r.hiddenDoors).includes(secret)))throw Error('secret generation');}check(true,'100 generated floors have a reachable hidden-room wall');
  for(let floorNumber=1;floorNumber<=6;floorNumber++)for(let sample=0;sample<40;sample++){
-  game.floor=floorNumber;floor();game.player.keys=0;
+  newGame();game.floor=floorNumber;floor();game.player.keys=0;
   const origin=game.rooms[0],goal=game.rooms.find(r=>r.type==='boss'),parents=new Map([[origin,null]]),q=[origin];
   for(let i=0;i<q.length&&!parents.has(goal);i++)for(const [dir,next] of Object.entries(q[i].doors))if(!next.locked&&!parents.has(next)){parents.set(next,{from:q[i],dir});q.push(next);}
   if(!parents.has(goal))throw Error('boss path blocked on floor '+floorNumber);

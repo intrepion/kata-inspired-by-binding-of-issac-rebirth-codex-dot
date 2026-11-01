@@ -48,3 +48,5 @@ test('pause reference exposes resume and full guide controls',()=>{for(const id 
 test('guide describes both chest types and the deeper secret',()=>{for(const phrase of ['class="guide-icon gold-chest"','Costs one key to open','deeper secret room','when a suitable location exists','Bomb the center of a wall'])assert.ok(html.includes(phrase),phrase);});
 
 test('unlockable starting profiles document the actual tradeoffs',()=>{for(const phrase of ['data-profile="scout"','data-profile="vanguard"','Defeat the Caves II boss','without losing red health','two keys and three coins','no bomb','Choose at most one unlocked start'])assert.ok(html.includes(phrase),phrase);});
+
+test('seed guide explains reproducibility and unlock limits',()=>{for(const phrase of ['id="seed-input"','id="pause-seed"','case-insensitive','Entering a seed disables new profile unlocks','Enemy behavior and later drops can differ','not compatible with Rebirth'])assert.ok(html.includes(phrase),phrase);});
