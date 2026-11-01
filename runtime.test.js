@@ -11,7 +11,7 @@ function fixture(name) {
    addEventListener(type,fn){this.listeners[type]=fn;},
    click(){this.listeners.click?.();},focus(){},
    querySelector:child=>element(selector+' '+child),
-   getContext:()=>({})
+   getContext:()=>new Proxy({},{get:(target,key)=>target[key]??(()=>{})})
   });
   return elements.get(selector);
  };
@@ -30,3 +30,4 @@ function fixture(name) {
 test('Sanctuary production-loop fixture (mock DOM, not browser QA)',()=>{fixture('sanctuary');});
 test('existing combat/progression fixture (mock DOM, not browser QA)',()=>{fixture('integration');});
 test('seeded-layout fixture (mock DOM, not browser QA)',()=>{fixture('seeds');});
+test('champion encounter fixture (mock DOM, not browser QA)',()=>{fixture('champions');});

@@ -51,3 +51,29 @@ does not test browser rendering, native focus, or storage persistence.
 With the loopback server running, open
 <http://127.0.0.1:8000/tests/sanctuary.html> for fixture-assisted coverage of
 eligibility, successful and refused deals, free choice, re-entry, descent and reset.
+
+## Champion encounters
+
+Starting on Basement II, each ordinary combat room rolls a 25% chance for
+one champion (never more than one). Its colored ring and letter identify the
+variant without relying on color alone:
+
+| Mark | Variant | Health | Movement | Guaranteed death reward |
+| --- | --- | --- | --- | --- |
+| I / silver | Iron | 1.8× | 20% slower | One soul heart |
+| S / yellow | Swift | 1.2× | 50% faster | One key |
+| V / orange | Volatile | 1.3× | Normal | One bomb; fires six hostile tears on death |
+
+Health is rounded up. Variants are equally likely within the champion roll.
+They retain their base attack patterns and normal half-heart contact damage;
+movement multipliers also apply to charger rushes and underground burrowers.
+Bosses, challenge waves and curse ambushes are excluded. Guaranteed drops are
+additional to the ordinary room-clear reward. Volatile death shots remain
+dangerous after room clearance, so do not rush straight onto the reward.
+These are original Rebirth-inspired variants, not exact champion rules.
+Seeded encounters repeat when room visit order and random-consuming actions match.
+
+The illustrated guide explains all three variants. The fixture at
+<http://127.0.0.1:8000/tests/champions.html> covers generated eligibility,
+movement, guaranteed rewards, death bursts and repeat-collection protection.
+It also runs in the mock-DOM `runtime.test.js` suite, which is not browser QA.

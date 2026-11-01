@@ -54,3 +54,8 @@ test('Sanctuary guide documents the choice, eligibility and capped relic effects
  for(const phrase of ['The Sanctuary','Dawn Halo','Vigil Seal','50%','Skipping a portal without entering','other disappears permanently','duplicate guards do not stack'])
   assert.ok(html.includes(phrase),phrase);
 });
+test('champion guide identifies letter markers, combat changes and death hazards',()=>{
+ for(const phrase of ['Champion enemies','Iron champion','Swift champion','Volatile champion','25% chance','six hostile tears','Always drops one soul heart','Always drops one key','drops one bomb'])
+  assert.ok(html.includes(phrase),phrase);
+ for(const type of ['iron','swift','volatile'])assert.ok(html.includes('champion-'+type));
+});

@@ -110,3 +110,22 @@ test('Sanctuary relics compose with upgrades and respect the shared health cap',
  p.maxHp=20;rules.apply('dawn',p);assert.equal(p.maxHp,20);assert.equal(p.damage,5.5);
  rules.apply('vigil',p);assert.equal(p.shields.reduce((n,h)=>n+h.hp,0),4);
 });
+test('champions begin on floor two with three equally sized bands in a 25% roll',()=>{
+ assert.equal(rules.championType(1,0),null);
+ assert.equal(rules.championType(2,0),'iron');
+ assert.equal(rules.championType(2,1/12),'swift');
+ assert.equal(rules.championType(6,2/12),'volatile');
+ assert.equal(rules.championType(2,.249999),'volatile');
+ assert.equal(rules.championType(2,.25),null);
+ assert.equal(rules.championType(6,.99),null);
+});
+test('champion health rounds up and decoration cannot stack',()=>{
+ for(const type of Object.keys(rules.champions)){
+  const e={hp:9,max:9},variant=rules.champions[type];
+  rules.makeChampion(e,type);
+  assert.equal(e.hp,Math.ceil(9*variant.health));assert.equal(e.max,e.hp);
+  assert.equal(e.moveScale,variant.speed);assert.equal(e.champion,type);
+  rules.makeChampion(e,type);assert.equal(e.hp,Math.ceil(9*variant.health));
+ }
+ const e={hp:9,max:9};assert.equal(rules.makeChampion(e,'unknown'),e);assert.equal(e.hp,9);
+});

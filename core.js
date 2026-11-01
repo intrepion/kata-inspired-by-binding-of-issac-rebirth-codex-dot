@@ -9,6 +9,23 @@ const Rules = {
   profileUnlock(floor,redDamage) {
     return floor===4?'scout':floor===2&&!redDamage?'vanguard':null;
   },
+  champions: {
+    iron:{name:'IRON',mark:'I',color:'#d5dce8',health:1.8,speed:.8,reward:'soul'},
+    swift:{name:'SWIFT',mark:'S',color:'#f5df6b',health:1.2,speed:1.5,reward:'key'},
+    volatile:{name:'VOLATILE',mark:'V',color:'#f59a68',health:1.3,speed:1,reward:'bomb'}
+  },
+  championType(floor, roll) {
+    if(floor<2 || roll>=.25) return null;
+    return ['iron','swift','volatile'][Math.min(2,Math.floor(roll*12))];
+  },
+  makeChampion(enemy, type) {
+    const variant=this.champions[type];
+    if(!variant || enemy.champion) return enemy;
+    enemy.champion=type;
+    enemy.hp=enemy.max=Math.ceil(enemy.max*variant.health);
+    enemy.moveScale=variant.speed;
+    return enemy;
+  },
   activeItems: {
     patchwork:{name:'PATCHWORK HEART',charges:3},
     fury:{name:'FURY TOME',charges:3},

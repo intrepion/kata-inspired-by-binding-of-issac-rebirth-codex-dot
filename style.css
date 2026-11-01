@@ -10,3 +10,7 @@
 @media(max-width:650px){#overlay{align-items:start;overflow:auto}}
 
 .seed-entry{display:block;font-size:13px;color:#ead5b7;margin:10px 0 4px}.seed-entry span{color:#aa9b89}.seed-input{width:min(100%,240px);padding:8px;border:1px solid #a78a6a;border-radius:3px;background:#1c1511;color:#fff;font:inherit;text-transform:uppercase}.seed-input:focus-visible{outline:3px solid #f5d095;outline-offset:2px}#seed-help{margin:4px auto 10px;font-size:11px}.seed-info{font-size:12px!important;margin:8px 0!important;overflow-wrap:anywhere}.guide-icon.seed{color:#e5c798}
+
+/* Letter markers make champion variants distinguishable without color alone. */
+.guide-icon.champion-iron,.guide-icon.champion-swift,.guide-icon.champion-volatile{border-radius:50%;border:3px solid currentColor;background:#534039;font-size:17px}
+.guide-icon.champion-iron{color:#d5dce8}.guide-icon.champion-swift{color:#f5df6b}.guide-icon.champion-volatile{color:#f59a68}

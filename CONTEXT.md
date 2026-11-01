@@ -7,3 +7,5 @@
 - **Pickup**: a resource or upgrade collected by touching it.
 
 - **Sanctuary**: a possible later boss reward room after visiting a Bargain without buying; offers one of two free relics. Any successful heart-container deal disables it for the run.
+
+- **Champion**: a marked ordinary enemy variant; from floor two, combat rooms can contain one with altered health/movement and a guaranteed reward. Volatile champions also fire a death burst.
