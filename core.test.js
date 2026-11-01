@@ -55,3 +55,14 @@ test('spectral, rebound and returning tears compose with existing modifiers',()=
   const shots=rules.projectiles(p,390,0);
   assert.equal(shots.length,2);assert.ok(shots.every(s=>s.damage===4&&s.spectral&&s.bounce&&s.returning&&s.pierce&&s.burst&&s.homing));
 });
+
+
+test('challenge rooms remain optional and accessible without keys across generated floors',()=>{
+ const make=(type,x,y)=>({type,x,y,doors:{},locked:false});
+ for(let seed=1;seed<=3000;seed++){let state=seed,random=()=>{state=(Math.imul(state,1664525)+1013904223)>>>0;return state/4294967296;};
+  const {rooms,boss,treasure,shop}=rules.floorRooms(make,random);boss.type='boss';treasure.type='treasure';shop.type='shop';treasure.locked=shop.locked=true;
+  const challenge=rules.attachChallenge(rooms,make),seen=new Set([rooms[0]]),q=[rooms[0]];
+  for(let i=0;i<q.length;i++)for(const n of Object.values(q[i].doors))if(!n.locked&&n!==challenge&&!seen.has(n)){seen.add(n);q.push(n);}
+  assert.ok(seen.has(boss),`boss blocked seed ${seed}`);assert.equal(Object.keys(challenge.doors).length,1);assert.ok(Object.values(challenge.doors).some(n=>seen.has(n)),`challenge blocked seed ${seed}`);
+ }
+});

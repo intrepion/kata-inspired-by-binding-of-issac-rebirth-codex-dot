@@ -16,6 +16,23 @@ const Rules = {
     const special=this.specialRooms(rooms,makeRoom);
     return {rooms,...special};
   },
+  attachChallenge(rooms, makeRoom) {
+    const occupied=new Set(rooms.map(r=>`${r.x},${r.y}`));
+    const queue=[rooms[0]], seen=new Set(queue);
+    const directions=[['right',1,0,'left'],['left',-1,0,'right'],['down',0,1,'up'],['up',0,-1,'down']];
+    for(let i=0;i<queue.length;i++){
+      const anchor=queue[i];
+      for(const [dir,dx,dy,opposite] of directions){
+        const x=anchor.x+dx,y=anchor.y+dy;
+        if(occupied.has(`${x},${y}`)||anchor.doors[dir])continue;
+        const challenge=makeRoom('challenge',x,y);
+        anchor.doors[dir]=challenge;challenge.doors[opposite]=anchor;rooms.push(challenge);
+        return challenge;
+      }
+      for(const next of Object.values(anchor.doors))if(['start','normal'].includes(next.type)&&!seen.has(next)){seen.add(next);queue.push(next);}
+    }
+    throw new Error('Could not place challenge room');
+  },
   specialRooms(rooms, makeRoom) {
     const start=rooms[0];
     const leaves=rooms.slice(1).filter(r=>Object.keys(r.doors).length===1)

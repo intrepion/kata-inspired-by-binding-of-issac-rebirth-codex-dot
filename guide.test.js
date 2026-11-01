@@ -28,3 +28,5 @@ test('bargain descriptions match their implemented items',()=>{const rules=requi
 test('new tear modifiers and charger are documented',()=>{
  for(const phrase of ['data-upgrade="spectral"','data-upgrade="bounce"','data-upgrade="return"','Homing stops steering it after the reversal','orange chargers'])assert.ok(html.includes(phrase),phrase);
 });
+
+test('challenge guide describes the implemented wave commitment',()=>{for(const phrase of ['optional orange-marked challenge room','three waves of enemies','no health-entry requirement','leave without opening the chest'])assert.ok(html.includes(phrase),phrase);});
