@@ -161,6 +161,9 @@ const Rules = {
   dealChance(floor, redDamage) {
     return floor<2 || floor>=6 ? 0 : redDamage ? .25 : 1;
   },
+  rewardRoomType(bargainVisited, bargainTaken, roll) {
+    return bargainVisited && !bargainTaken && roll < .5 ? 'sanctuary' : 'deal';
+  },
   payHeartContainers(player, hearts) {
     const cost=hearts*2, remaining=player.maxHp-cost;
     if(remaining<0) return false;
@@ -174,6 +177,8 @@ const Rules = {
     player.coins -= drop.price; return true;
   },
   apply(item, player) {
+    if (item === 'dawn') { this.apply('health',player); player.damage += 1; }
+    if (item === 'vigil') { this.addShield(player,'soul'); this.addShield(player,'soul'); player.orbit = true; }
     if (item === 'damage') player.damage += 1.5;
     if (item === 'blood') player.damage += 3;
     if (item === 'homing') player.homing = true;

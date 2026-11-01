@@ -96,3 +96,17 @@ test('profile unlocks require the correct boss floor and damage condition',()=>{
 
 
 test('seeded random streams reproduce sequences and distinguish seed and floor',()=>{let a=rules.seededRandom('HELLO:1'),b=rules.seededRandom('HELLO:1'),c=rules.seededRandom('HELLO:2');const aa=Array.from({length:100},()=>a()),bb=Array.from({length:100},()=>b()),cc=Array.from({length:100},()=>c());assert.deepEqual(aa,bb);assert.notDeepEqual(aa,cc);assert.ok(aa.every(n=>n>=0&&n<1));});
+test('Sanctuary selection requires a visited bargain and no successful purchase',()=>{
+ assert.equal(rules.rewardRoomType(false,false,0),'deal');
+ assert.equal(rules.rewardRoomType(true,false,0),'sanctuary');
+ assert.equal(rules.rewardRoomType(true,false,.499),'sanctuary');
+ assert.equal(rules.rewardRoomType(true,false,.5),'deal');
+ assert.equal(rules.rewardRoomType(true,true,0),'deal');
+});
+test('Sanctuary relics compose with upgrades and respect the shared health cap',()=>{
+ const p={...player(),shields:[]};
+ rules.apply('dawn',p);assert.equal(p.maxHp,8);assert.equal(p.hp,6);assert.equal(p.damage,4.5);
+ rules.apply('vigil',p);assert.equal(p.shields.length,2);assert.equal(p.orbit,true);
+ p.maxHp=20;rules.apply('dawn',p);assert.equal(p.maxHp,20);assert.equal(p.damage,5.5);
+ rules.apply('vigil',p);assert.equal(p.shields.reduce((n,h)=>n+h.hp,0),4);
+});

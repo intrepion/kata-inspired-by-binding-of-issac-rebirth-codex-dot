@@ -50,3 +50,7 @@ test('guide describes both chest types and the deeper secret',()=>{for(const phr
 test('unlockable starting profiles document the actual tradeoffs',()=>{for(const phrase of ['data-profile="scout"','data-profile="vanguard"','Defeat the Caves II boss','without losing red health','two keys and three coins','no bomb','Choose at most one unlocked start'])assert.ok(html.includes(phrase),phrase);});
 
 test('seed guide explains reproducibility and unlock limits',()=>{for(const phrase of ['id="seed-input"','id="pause-seed"','case-insensitive','Entering a seed disables new profile unlocks','Enemy behavior and later drops can differ','not compatible with Rebirth'])assert.ok(html.includes(phrase),phrase);});
+test('Sanctuary guide documents the choice, eligibility and capped relic effects',()=>{
+ for(const phrase of ['The Sanctuary','Dawn Halo','Vigil Seal','50%','Skipping a portal without entering','other disappears permanently','duplicate guards do not stack'])
+  assert.ok(html.includes(phrase),phrase);
+});
