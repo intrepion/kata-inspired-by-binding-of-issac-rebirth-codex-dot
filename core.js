@@ -1,6 +1,9 @@
 'use strict';
 // Rules shared by the game and focused tests. All quantities use half hearts.
 const Rules = {
+  profileUnlock(floor,redDamage) {
+    return floor===4?'scout':floor===2&&!redDamage?'vanguard':null;
+  },
   activeItems: {
     patchwork:{name:'PATCHWORK HEART',charges:3},
     fury:{name:'FURY TOME',charges:3},

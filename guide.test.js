@@ -46,3 +46,5 @@ test('every guide definition has a visual key and shop entries match current inv
 test('pause reference exposes resume and full guide controls',()=>{for(const id of ['pause-reference','pause-resume','pause-guide'])assert.ok(html.includes(`id="${id}"`));assert.match(game,/pauseGuide\?\.addEventListener/);assert.match(game,/setPaused\(!paused,true\)/);});
 
 test('guide describes both chest types and the deeper secret',()=>{for(const phrase of ['class="guide-icon gold-chest"','Costs one key to open','deeper secret room','when a suitable location exists','Bomb the center of a wall'])assert.ok(html.includes(phrase),phrase);});
+
+test('unlockable starting profiles document the actual tradeoffs',()=>{for(const phrase of ['data-profile="scout"','data-profile="vanguard"','Defeat the Caves II boss','without losing red health','two keys and three coins','no bomb','Choose at most one unlocked start'])assert.ok(html.includes(phrase),phrase);});
