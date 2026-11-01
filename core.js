@@ -164,6 +164,8 @@ const Rules = {
     if (item === 'spectral') player.spectral = true;
     if (item === 'bounce') player.bounce = true;
     if (item === 'return') player.returning = true;
+    if (item === 'wisp') player.wisp = true;
+    if (item === 'orbit') player.orbit = true;
   },
   projectiles(player, dx, dy) {
     const angles = player.double ? [-.13, .13] : [0];

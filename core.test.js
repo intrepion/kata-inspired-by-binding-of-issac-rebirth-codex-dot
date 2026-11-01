@@ -83,3 +83,6 @@ test('active item charges and temporary damage combine with projectiles',()=>{
  assert.deepEqual(Object.fromEntries(Object.entries(rules.activeItems).map(([k,v])=>[k,v.charges])),{patchwork:3,fury:3,bell:4});
  const p={damage:3.5,roomDamage:4,double:true,pierce:true};const shots=rules.projectiles(p,390,0);assert.equal(shots.length,2);assert.ok(shots.every(s=>s.damage===7.5&&s.pierce));
 });
+
+
+test('familiar upgrades persist as single companions without changing player tears',()=>{const p={damage:4};rules.apply('wisp',p);rules.apply('orbit',p);rules.apply('wisp',p);assert.equal(p.wisp,true);assert.equal(p.orbit,true);assert.equal(rules.projectiles(p,390,0)[0].damage,4);});
