@@ -1,6 +1,14 @@
 'use strict';
 // Rules shared by the game and focused tests. All quantities use half hearts.
 const Rules = {
+  stage(floor) {
+    const stage = Math.min(2, Math.floor((floor-1)/2)%3);
+    return [
+      {name:'BASEMENT', number:(floor-1)%2+1, boss:'boss', enemies:['chaser','spitter']},
+      {name:'CAVES', number:(floor-1)%2+1, boss:'mason', enemies:['chaser','spitter','burrower']},
+      {name:'DEPTHS', number:(floor-1)%2+1, boss:'warden', enemies:['chaser','spitter','burrower','fan']}
+    ][stage];
+  },
   addShield(player, kind) {
     if (player.maxHp + player.shields.reduce((n,h)=>n+h.hp,0) >= 24) return false;
     player.shields.push({kind, hp: Math.min(2, 24-player.maxHp-player.shields.reduce((n,h)=>n+h.hp,0))});
