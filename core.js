@@ -44,6 +44,21 @@ const Rules = {
   redChest(random=Math.random) {
     return [['soul','soul'],['bomb','key'],['coin','coin','coin'],['ambush']][Math.min(3,Math.floor(random()*4))];
   },
+  chestContents(golden,random=Math.random) {
+    const pool=golden?[['coin','coin','coin'],['bomb','key','soul'],['upgrade'],['soul','soul']]:[['coin','coin'],['bomb'],['key'],['heart']];
+    return pool[Math.min(pool.length-1,Math.floor(random()*pool.length))];
+  },
+  superSecretCandidates(rooms,boss) {
+    const occupied=new Set(rooms.map(r=>`${r.x},${r.y}`)),choices=[];
+    for(let x=-5;x<=5;x++)for(let y=-5;y<=5;y++){
+      if(occupied.has(`${x},${y}`))continue;
+      const near=rooms.filter(r=>Math.abs(r.x-x)+Math.abs(r.y-y)===1);
+      if(near.length===1&&['start','normal'].includes(near[0].type))choices.push({x,y,neighbor:near[0],distance:Math.abs(x-boss.x)+Math.abs(y-boss.y)});
+    }
+    if(!choices.length)return [];
+    const closest=Math.min(...choices.map(c=>c.distance));
+    return choices.filter(c=>c.distance===closest);
+  },
   specialRooms(rooms, makeRoom) {
     const start=rooms[0];
     const leaves=rooms.slice(1).filter(r=>Object.keys(r.doors).length===1)

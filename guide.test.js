@@ -44,3 +44,5 @@ test('every guide definition has a visual key and shop entries match current inv
  const pool=inventory.match(/item:pick\(\[([^\]]+)\]\)/)[1];const actualUpgrades=[...pool.matchAll(/'([^']+)'/g)].map(m=>m[1]).sort();const guideUpgrades=html.match(/data-shop-upgrades="([^"]+)"/)[1].split(',').sort();assert.deepEqual(guideUpgrades,actualUpgrades);
 });
 test('pause reference exposes resume and full guide controls',()=>{for(const id of ['pause-reference','pause-resume','pause-guide'])assert.ok(html.includes(`id="${id}"`));assert.match(game,/pauseGuide\?\.addEventListener/);assert.match(game,/setPaused\(!paused,true\)/);});
+
+test('guide describes both chest types and the deeper secret',()=>{for(const phrase of ['class="guide-icon gold-chest"','Costs one key to open','deeper secret room','when a suitable location exists','Bomb the center of a wall'])assert.ok(html.includes(phrase),phrase);});

@@ -86,3 +86,7 @@ test('active item charges and temporary damage combine with projectiles',()=>{
 
 
 test('familiar upgrades persist as single companions without changing player tears',()=>{const p={damage:4};rules.apply('wisp',p);rules.apply('orbit',p);rules.apply('wisp',p);assert.equal(p.wisp,true);assert.equal(p.orbit,true);assert.equal(rules.projectiles(p,390,0)[0].damage,4);});
+
+
+test('normal and golden chest reward pools are distinct and bounded',()=>{assert.deepEqual(rules.chestContents(false,()=>0),['coin','coin']);assert.deepEqual(rules.chestContents(false,()=>.99),['heart']);assert.deepEqual(rules.chestContents(true,()=>.51),['upgrade']);assert.deepEqual(rules.chestContents(true,()=>.99),['soul','soul']);});
+test('deeper secret candidates have exactly one ordinary neighbor and favor boss proximity',()=>{const make=(type,x,y)=>({type,x,y,doors:{}});for(let seed=1;seed<=3000;seed++){let n=seed,r=()=>{n=(Math.imul(n,1664525)+1013904223)>>>0;return n/4294967296};let {rooms,boss,treasure,shop}=rules.floorRooms(make,r);boss.type='boss';treasure.type='treasure';shop.type='shop';rules.attachChallenge(rooms,make);rules.attachOptional(rooms,make,'curse');let choices=rules.superSecretCandidates(rooms,boss);for(const c of choices){let adjacent=rooms.filter(v=>Math.abs(v.x-c.x)+Math.abs(v.y-c.y)===1);assert.deepEqual(adjacent,[c.neighbor]);assert.ok(['start','normal'].includes(c.neighbor.type));assert.equal(c.distance,choices[0].distance);}}});
