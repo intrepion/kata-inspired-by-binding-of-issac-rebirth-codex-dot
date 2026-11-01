@@ -2,6 +2,15 @@
 // Fixture-assisted browser checks against the production game loop, served over HTTP.
 (function(){const results=[];const check=(ok,label)=>{if(!ok)throw Error(label);results.push('PASS '+label);};try{
  document.querySelector('#start').click();check(!!game&&game.floor===1,'normal start creates floor one');for(let i=0;i<100;i++){newGame();let secret=game.rooms.find(r=>r.type==='secret');if(!secret||!game.rooms.some(r=>Object.values(r.hiddenDoors).includes(secret)))throw Error('secret generation');}check(true,'100 generated floors have a reachable hidden-room wall');
+ for(let floorNumber=1;floorNumber<=6;floorNumber++)for(let sample=0;sample<40;sample++){
+  game.floor=floorNumber;floor();game.player.keys=0;
+  const origin=game.rooms[0],goal=game.rooms.find(r=>r.type==='boss'),parents=new Map([[origin,null]]),q=[origin];
+  for(let i=0;i<q.length&&!parents.has(goal);i++)for(const [dir,next] of Object.entries(q[i].doors))if(!next.locked&&!parents.has(next)){parents.set(next,{from:q[i],dir});q.push(next);}
+  if(!parents.has(goal))throw Error('boss path blocked on floor '+floorNumber);
+  const path=[];for(let r=goal;r!==origin;){let step=parents.get(r);path.unshift({from:step.from,dir:step.dir,to:r});r=step.from;}
+  for(const step of path){enter(step.from);step.from.clear=true;step.from.enemies=[];Object.assign(game.player,({left:{x:106,y:320},right:{x:854,y:320},up:{x:480,y:121},down:{x:480,y:519}})[step.dir]);update(.001);if(game.current!==step.to||game.player.keys!==0)throw Error('door traversal failed');}
+ }
+ check(true,'240 generated floors allow actual door traversal to the boss with zero keys');newGame();
  let p=game.player;p.hp=4;p.charge=3;useItem();check(p.hp===6&&p.charge===0,'Patchwork Heart heals one red heart and spends three charges');p.charge=3;useItem();check(p.hp===6&&p.charge===0,'Patchwork Heart still spends charge at full health');p.charge=3;
  let shop=game.rooms.find(r=>r.type==='shop'),treasure=game.rooms.find(r=>r.type==='treasure'),boss=game.rooms.find(r=>r.type==='boss');
  check(shop&&shop.locked&&treasure&&!treasure.locked&&boss,'special rooms generated and initial locks set');

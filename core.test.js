@@ -24,3 +24,26 @@ test('Lovers pickups avoid rock interiors and fall back to the player',()=>{let 
 test('deal chance rewards avoiding red health damage and excludes floor one and final floor',()=>{assert.equal(rules.dealChance(1,false),0);assert.equal(rules.dealChance(2,false),1);assert.equal(rules.dealChance(2,true),.25);assert.equal(rules.dealChance(6,false),0);});
 test('heart trades remove containers but never cause death or spend shields',()=>{let p={hp:6,maxHp:6,shields:[]};assert.equal(rules.payHeartContainers(p,1),true);assert.equal(p.hp,4);assert.equal(p.maxHp,4);assert.equal(rules.payHeartContainers(p,2),false);assert.equal(p.hp,4);p.shields=[{kind:'soul',hp:2}];assert.equal(rules.payHeartContainers(p,2),true);assert.equal(p.maxHp,0);assert.equal(p.hp,0);assert.equal(p.shields[0].hp,2);});
 test('homing and damage compose with existing tear modifiers',()=>{let p={damage:3.5};for(let item of ['blood','homing','double','pierce','burst'])rules.apply(item,p);let shots=rules.projectiles(p,390,0);assert.equal(shots.length,2);assert.ok(shots.every(s=>s.damage===6.5&&s.homing&&s.pierce&&s.burst));});
+
+test('generated floors always have a key-free boss path with locked optional rooms',()=>{
+  const make=(type,x,y)=>({type,x,y,doors:{},locked:false});
+  for(let seed=1;seed<=3000;seed++){
+    let state=seed;const random=()=>{state=(Math.imul(state,1664525)+1013904223)>>>0;return state/4294967296;};
+    const {rooms,boss,treasure,shop}=rules.floorRooms(make,random);
+    assert.notEqual(boss,treasure);assert.notEqual(boss,shop);assert.notEqual(treasure,shop);
+    treasure.locked=shop.locked=true;
+    const seen=new Set([rooms[0]]),queue=[rooms[0]];
+    for(let i=0;i<queue.length;i++)for(const r of Object.values(queue[i].doors))if(!r.locked&&!seen.has(r)){seen.add(r);queue.push(r);}
+    assert.ok(seen.has(boss),`seed ${seed} blocks the boss`);
+    for(const r of rooms)for(const [dir,n] of Object.entries(r.doors))assert.equal(n.doors[{left:'right',right:'left',up:'down',down:'up'}[dir]],r);
+  }
+});
+
+test('a narrow route gains optional rooms rather than locking the boss path',()=>{
+  const make=(type,x,y)=>({type,x,y,doors:{},locked:false});
+  const rooms=Array.from({length:12},(_,i)=>make(i?'normal':'start',i,0));
+  for(let i=1;i<rooms.length;i++){rooms[i-1].doors.right=rooms[i];rooms[i].doors.left=rooms[i-1];}
+  const {boss,treasure,shop}=rules.specialRooms(rooms,make);
+  assert.equal(boss,rooms[11]);assert.equal(rooms.length,14);
+  assert.ok(rooms.indexOf(treasure)>=12 && rooms.indexOf(shop)>=12);
+});

@@ -1,6 +1,52 @@
 'use strict';
 // Rules shared by the game and focused tests. All quantities use half hearts.
 const Rules = {
+  floorRooms(makeRoom, random=Math.random) {
+    const pick=a=>a[Math.floor(random()*a.length)];
+    const rooms=[makeRoom('start',0,0)], occupied=new Set(['0,0']);
+    while(rooms.length<12){
+      const base=pick(rooms),d=pick([[1,0],[-1,0],[0,1],[0,-1]]),x=base.x+d[0],y=base.y+d[1],key=`${x},${y}`;
+      if(Math.abs(x)>3||Math.abs(y)>3||occupied.has(key))continue;
+      occupied.add(key);rooms.push(makeRoom('normal',x,y));
+    }
+    for(const a of rooms)for(const b of rooms){
+      const dx=b.x-a.x,dy=b.y-a.y;
+      if(Math.abs(dx)+Math.abs(dy)===1)a.doors[dx===1?'right':dx===-1?'left':dy===1?'down':'up']=b;
+    }
+    const special=this.specialRooms(rooms,makeRoom);
+    return {rooms,...special};
+  },
+  specialRooms(rooms, makeRoom) {
+    const start=rooms[0];
+    const leaves=rooms.slice(1).filter(r=>Object.keys(r.doors).length===1)
+      .sort((a,b)=>Math.abs(b.x)+Math.abs(b.y)-Math.abs(a.x)-Math.abs(a.y));
+    const boss=leaves[0]||rooms[rooms.length-1];
+    const parent=new Map([[start,null]]), queue=[start];
+    for(let i=0;i<queue.length&&!parent.has(boss);i++) for(const next of Object.values(queue[i].doors)) {
+      if(!parent.has(next)){parent.set(next,queue[i]);queue.push(next);}
+    }
+    if(!parent.has(boss)) throw new Error('Floor graph is disconnected');
+    const route=new Set();
+    for(let r=boss;r;r=parent.get(r)) route.add(r);
+    const options=[...leaves,...rooms.slice(1)].filter((r,i,a)=>!route.has(r)&&a.indexOf(r)===i);
+    // Rare narrow layouts need extra optional rooms rather than locks on the boss route.
+    const directions=[['right',1,0,'left'],['left',-1,0,'right'],['down',0,1,'up'],['up',0,-1,'down']];
+    while(options.length<2){
+      const occupied=new Set(rooms.map(r=>`${r.x},${r.y}`));
+      let added=false;
+      for(const anchor of [...route]){
+        for(const [dir,dx,dy,opposite] of directions){
+          const x=anchor.x+dx,y=anchor.y+dy;
+          if(occupied.has(`${x},${y}`)||anchor.doors[dir]) continue;
+          const extra=makeRoom('normal',x,y);anchor.doors[dir]=extra;extra.doors[opposite]=anchor;
+          rooms.push(extra);options.push(extra);added=true;break;
+        }
+        if(added)break;
+      }
+      if(!added) throw new Error('Could not place optional room');
+    }
+    return {boss,treasure:options[0],shop:options[1]};
+  },
   // Three separated rocks leave broad horizontal and vertical corridors.
   roomGeometry(count, entry, random=Math.random) {
     const anchors=[{x:260,y:210},{x:700,y:210},{x:260,y:430},{x:700,y:430}];
