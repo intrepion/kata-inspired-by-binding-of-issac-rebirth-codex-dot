@@ -1,6 +1,21 @@
 'use strict';
 // Rules shared by the game and focused tests. All quantities use half hearts.
 const Rules = {
+  addShield(player, kind) {
+    if (player.maxHp + player.shields.reduce((n,h)=>n+h.hp,0) >= 24) return false;
+    player.shields.push({kind, hp: Math.min(2, 24-player.maxHp-player.shields.reduce((n,h)=>n+h.hp,0))});
+    return true;
+  },
+  damage(player, amount) {
+    let explosions=0;
+    while(amount>0 && player.shields.length) {
+      const h=player.shields[player.shields.length-1], taken=Math.min(amount,h.hp);
+      h.hp-=taken; amount-=taken;
+      if(!h.hp) { if(h.kind==='black') explosions++; player.shields.pop(); }
+    }
+    player.hp=Math.max(0,player.hp-amount);
+    return explosions;
+  },
   unlock(room, player) {
     if (!room.locked) return true;
     if (player.keys < 1) return false;
@@ -16,7 +31,7 @@ const Rules = {
     if (item === 'rate') player.rate = Math.max(.12, player.rate - .045);
     if (item === 'speed') player.speed += 25;
     if (item === 'range') player.range += 100;
-    if (item === 'health') { player.maxHp += 2; player.hp += 2; }
+    if (item === 'health') { const gain=Math.min(2,24-player.maxHp-(player.shields||[]).reduce((n,h)=>n+h.hp,0)); player.maxHp += gain; player.hp += gain; }
     if (item === 'double') player.double = true;
     if (item === 'pierce') player.pierce = true;
     if (item === 'burst') player.burst = true;
