@@ -1,6 +1,38 @@
 'use strict';
 // Rules shared by the game and focused tests. All quantities use half hearts.
 const Rules = {
+  // Three separated rocks leave broad horizontal and vertical corridors.
+  roomGeometry(count, entry, random=Math.random) {
+    const anchors=[{x:260,y:210},{x:700,y:210},{x:260,y:430},{x:700,y:430}];
+    const shuffle=a=>{for(let i=a.length-1;i>0;i--){let j=Math.min(i,Math.floor(random()*(i+1)));[a[i],a[j]]=[a[j],a[i]];}return a;};
+    let rocks=shuffle(anchors.slice()).slice(0,3).map(p=>({x:p.x+(random()-.5)*30,y:p.y+(random()-.5)*30,hp:1}));
+    const safe=(p,points,min)=>points.every(q=>Math.hypot(p.x-q.x,p.y-q.y)>=min);
+    // Finite randomized attempts followed by a deterministic grid; no rejection loop can hang.
+    function place(obstacles) {
+      let positions=[];
+      for(let i=0;i<count;i++){
+        let candidates=[];
+        for(let j=0;j<40;j++)candidates.push({x:250+random()*460,y:200+random()*240});
+        for(let y=160;y<=480;y+=40)for(let x=160;x<=800;x+=40)candidates.push({x,y});
+        let p=candidates.find(p=>safe(p,obstacles,58)&&safe(p,positions,40)&&Math.hypot(p.x-entry.x,p.y-entry.y)>=55);
+        if(!p)return null;
+        positions.push(p);
+      }
+      return positions;
+    }
+    let enemies=place(rocks);
+    if(!enemies){rocks=[];enemies=place(rocks);}
+    // A future room that asks for more entities than fit is cleared rather than softlocked.
+    return {rocks,enemies:enemies||[]};
+  },
+  pickupPosition(x,y,player,rocks) {
+    const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+    const valid=p=>rocks.every(r=>Math.hypot(p.x-r.x,p.y-r.y)>=40);
+    let wanted={x:clamp(x,120,840),y:clamp(y,135,505)};
+    if(valid(wanted))return wanted;
+    // The player occupies a reachable position, so it is a safe fallback for a pickup.
+    return {x:player.x,y:player.y};
+  },
   stage(floor) {
     const stage = Math.min(2, Math.floor((floor-1)/2));
     return [
