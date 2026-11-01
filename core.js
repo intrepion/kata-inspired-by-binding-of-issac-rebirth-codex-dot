@@ -1,6 +1,11 @@
 'use strict';
 // Rules shared by the game and focused tests. All quantities use half hearts.
 const Rules = {
+  activeItems: {
+    patchwork:{name:'PATCHWORK HEART',charges:3},
+    fury:{name:'FURY TOME',charges:3},
+    bell:{name:'ASHEN BELL',charges:4}
+  },
   floorRooms(makeRoom, random=Math.random) {
     const pick=a=>a[Math.floor(random()*a.length)];
     const rooms=[makeRoom('start',0,0)], occupied=new Set(['0,0']);
@@ -162,7 +167,7 @@ const Rules = {
   },
   projectiles(player, dx, dy) {
     const angles = player.double ? [-.13, .13] : [0];
-    return angles.map(a => ({dx: dx * Math.cos(a) - dy * Math.sin(a), dy: dx * Math.sin(a) + dy * Math.cos(a), damage: player.damage, pierce: player.pierce, burst: player.burst, homing: player.homing, spectral: player.spectral, bounce: player.bounce, returning: player.returning}));
+    return angles.map(a => ({dx: dx * Math.cos(a) - dy * Math.sin(a), dy: dx * Math.sin(a) + dy * Math.cos(a), damage: player.damage+(player.roomDamage||0), pierce: player.pierce, burst: player.burst, homing: player.homing, spectral: player.spectral, bounce: player.bounce, returning: player.returning}));
   }
 };
 if (typeof module !== 'undefined') module.exports = Rules;

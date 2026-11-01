@@ -77,3 +77,9 @@ test('curse and challenge rooms are optional without blocking the boss',()=>{
   const seen=new Set([rooms[0]]),q=[rooms[0]];for(let i=0;i<q.length;i++)for(const n of Object.values(q[i].doors))if(!n.locked&&n!==challenge&&n!==curse&&!seen.has(n)){seen.add(n);q.push(n);}assert.ok(seen.has(boss));for(const room of [curse,challenge]){assert.equal(Object.keys(room.doors).length,1);assert.ok(Object.values(room.doors).some(n=>seen.has(n)));}
  }
 });
+
+
+test('active item charges and temporary damage combine with projectiles',()=>{
+ assert.deepEqual(Object.fromEntries(Object.entries(rules.activeItems).map(([k,v])=>[k,v.charges])),{patchwork:3,fury:3,bell:4});
+ const p={damage:3.5,roomDamage:4,double:true,pierce:true};const shots=rules.projectiles(p,390,0);assert.equal(shots.length,2);assert.ok(shots.every(s=>s.damage===7.5&&s.pierce));
+});
