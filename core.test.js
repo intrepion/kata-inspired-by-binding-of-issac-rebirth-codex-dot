@@ -66,3 +66,14 @@ test('challenge rooms remain optional and accessible without keys across generat
   assert.ok(seen.has(boss),`boss blocked seed ${seed}`);assert.equal(Object.keys(challenge.doors).length,1);assert.ok(Object.values(challenge.doors).some(n=>seen.has(n)),`challenge blocked seed ${seed}`);
  }
 });
+
+
+test('red chest outcomes are bounded and contain the documented rewards',()=>{
+ assert.deepEqual([0,.25,.5,.75,.999].map(n=>rules.redChest(()=>n)),[['soul','soul'],['bomb','key'],['coin','coin','coin'],['ambush'],['ambush']]);
+});
+test('curse and challenge rooms are optional without blocking the boss',()=>{
+ const make=(type,x,y)=>({type,x,y,doors:{},locked:false});
+ for(let seed=1;seed<=3000;seed++){let state=seed,random=()=>{state=(Math.imul(state,1664525)+1013904223)>>>0;return state/4294967296;};const {rooms,boss,treasure,shop}=rules.floorRooms(make,random);boss.type='boss';treasure.type='treasure';shop.type='shop';treasure.locked=shop.locked=true;const challenge=rules.attachChallenge(rooms,make),curse=rules.attachOptional(rooms,make,'curse');
+  const seen=new Set([rooms[0]]),q=[rooms[0]];for(let i=0;i<q.length;i++)for(const n of Object.values(q[i].doors))if(!n.locked&&n!==challenge&&n!==curse&&!seen.has(n)){seen.add(n);q.push(n);}assert.ok(seen.has(boss));for(const room of [curse,challenge]){assert.equal(Object.keys(room.doors).length,1);assert.ok(Object.values(room.doors).some(n=>seen.has(n)));}
+ }
+});

@@ -30,3 +30,5 @@ test('new tear modifiers and charger are documented',()=>{
 });
 
 test('challenge guide describes the implemented wave commitment',()=>{for(const phrase of ['optional orange-marked challenge room','three waves of enemies','no health-entry requirement','leave without opening the chest'])assert.ok(html.includes(phrase),phrase);});
+
+test('curse room guide documents risks and possible contents',()=>{for(const phrase of ['purple-marked curse room','either direction','two soul hearts','an ambush of two enemies','red health reduces'])assert.ok(html.includes(phrase),phrase);});

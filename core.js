@@ -17,6 +17,9 @@ const Rules = {
     return {rooms,...special};
   },
   attachChallenge(rooms, makeRoom) {
+    return this.attachOptional(rooms,makeRoom,'challenge');
+  },
+  attachOptional(rooms, makeRoom, type) {
     const occupied=new Set(rooms.map(r=>`${r.x},${r.y}`));
     const queue=[rooms[0]], seen=new Set(queue);
     const directions=[['right',1,0,'left'],['left',-1,0,'right'],['down',0,1,'up'],['up',0,-1,'down']];
@@ -25,13 +28,16 @@ const Rules = {
       for(const [dir,dx,dy,opposite] of directions){
         const x=anchor.x+dx,y=anchor.y+dy;
         if(occupied.has(`${x},${y}`)||anchor.doors[dir])continue;
-        const challenge=makeRoom('challenge',x,y);
-        anchor.doors[dir]=challenge;challenge.doors[opposite]=anchor;rooms.push(challenge);
-        return challenge;
+        const added=makeRoom(type,x,y);
+        anchor.doors[dir]=added;added.doors[opposite]=anchor;rooms.push(added);
+        return added;
       }
-      for(const next of Object.values(anchor.doors))if(['start','normal'].includes(next.type)&&!seen.has(next)){seen.add(next);queue.push(next);}
+      for(const next of Object.values(anchor.doors))if(['start','normal','boss'].includes(next.type)&&!seen.has(next)){seen.add(next);queue.push(next);}
     }
-    throw new Error('Could not place challenge room');
+    throw new Error('Could not place optional room');
+  },
+  redChest(random=Math.random) {
+    return [['soul','soul'],['bomb','key'],['coin','coin','coin'],['ambush']][Math.min(3,Math.floor(random()*4))];
   },
   specialRooms(rooms, makeRoom) {
     const start=rooms[0];
