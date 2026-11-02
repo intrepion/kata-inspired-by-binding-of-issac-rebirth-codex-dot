@@ -77,3 +77,7 @@ The illustrated guide explains all three variants. The fixture at
 <http://127.0.0.1:8000/tests/champions.html> covers generated eligibility,
 movement, guaranteed rewards, death bursts and repeat-collection protection.
 It also runs in the mock-DOM `runtime.test.js` suite, which is not browser QA.
+
+## Arcade metadata
+
+See [docs/arcade-metadata.md](docs/arcade-metadata.md) for the game-owned manifest and screenshot provenance.
