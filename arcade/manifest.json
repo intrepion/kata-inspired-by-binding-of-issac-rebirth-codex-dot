@@ -1,6 +1,49 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "gameId": "kata-inspired-by-binding-of-issac-rebirth-codex-dot",
   "playUrl": "https://intrepion.github.io/kata-inspired-by-binding-of-issac-rebirth-codex-dot/",
-  "screenshots": []
+  "screenshots": [
+    {
+      "path": "arcade/screenshots/ci-20261102-01.jpg",
+      "sha256": "3373135641ab5da5f74f451a664fc5d0b68b1cca8a3e59ab1992df6ac396607c",
+      "alt": "Below the Floorboards gameplay, view 1",
+      "provenance": {
+        "kind": "ci_gameplay_capture",
+        "sourcePath": "arcade/capture-evidence/ci-20261102-01.png",
+        "sourceSha256": "bf834f4e00341d37bd6c3f3b929596074ba435d508ff41fac62c8e58d518f045",
+        "captureCommit": "fc51e9063ba672ae80d65347fddb3a5e282874cb",
+        "workflowRunId": "41403579526",
+        "inputHashes": {
+          "index.html": "152bc7f2d7f16811002fd390dbf36f2af08279b6febcf6ef18827e0e35076dc2",
+          "style.css": "b646f104cd80c1264e627ca280924cf20ff165f3c7c5ab93baa20e4c88a32281",
+          "game.js": "4956471216414a82bce5024924bd84d156a27d006babfdbe0a5e7acc46c0b009",
+          "core.js": "d1764188758eba2d0ae8707508bff100536c38bf34395e9478e9614d94f5307f"
+        },
+        "publishedFilesVerifiedAt": "2026-11-02T19:01:20Z",
+        "captureRecordPath": "arcade/capture-evidence/ci-20261102-record.json",
+        "captureRecordSha256": "ca7b8278496114222c1282e50b71ce47bc62eafba364f08a0a40d49f477a1105"
+      }
+    },
+    {
+      "path": "arcade/screenshots/ci-20261102-02.jpg",
+      "sha256": "087df51fb288c55dd752b394e2160c329c03c191df0f54c3d969e5bbf34cb8fa",
+      "alt": "Below the Floorboards gameplay, view 2",
+      "provenance": {
+        "kind": "ci_gameplay_capture",
+        "sourcePath": "arcade/capture-evidence/ci-20261102-02.png",
+        "sourceSha256": "25ac2fcc526b3b8fabceb5abaf89d2c5624e663064626577b434814df460f407",
+        "captureCommit": "fc51e9063ba672ae80d65347fddb3a5e282874cb",
+        "workflowRunId": "41403579526",
+        "inputHashes": {
+          "index.html": "152bc7f2d7f16811002fd390dbf36f2af08279b6febcf6ef18827e0e35076dc2",
+          "style.css": "b646f104cd80c1264e627ca280924cf20ff165f3c7c5ab93baa20e4c88a32281",
+          "game.js": "4956471216414a82bce5024924bd84d156a27d006babfdbe0a5e7acc46c0b009",
+          "core.js": "d1764188758eba2d0ae8707508bff100536c38bf34395e9478e9614d94f5307f"
+        },
+        "publishedFilesVerifiedAt": "2026-11-02T19:01:20Z",
+        "captureRecordPath": "arcade/capture-evidence/ci-20261102-record.json",
+        "captureRecordSha256": "ca7b8278496114222c1282e50b71ce47bc62eafba364f08a0a40d49f477a1105"
+      }
+    }
+  ]
 }

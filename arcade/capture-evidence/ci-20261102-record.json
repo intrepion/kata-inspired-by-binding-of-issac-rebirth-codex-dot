@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "workflowCommit": "8b752ba40b042fa830131ccbb286f6b337d2b4c4",
+  "sourceCommit": "fc51e9063ba672ae80d65347fddb3a5e282874cb",
+  "runId": "41403579526",
+  "url": "http://127.0.0.1:4218/",
+  "inputs": {
+    "index.html": "152bc7f2d7f16811002fd390dbf36f2af08279b6febcf6ef18827e0e35076dc2",
+    "style.css": "b646f104cd80c1264e627ca280924cf20ff165f3c7c5ab93baa20e4c88a32281",
+    "game.js": "4956471216414a82bce5024924bd84d156a27d006babfdbe0a5e7acc46c0b009",
+    "core.js": "d1764188758eba2d0ae8707508bff100536c38bf34395e9478e9614d94f5307f"
+  },
+  "browser": "153.0.8010.12",
+  "viewport": {
+    "width": 1280,
+    "height": 1000
+  },
+  "gameSeed": "ARCADE",
+  "screenshots": [
+    "floorboards-01.png",
+    "floorboards-02.png"
+  ]
+}
